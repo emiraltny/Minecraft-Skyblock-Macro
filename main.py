@@ -8,6 +8,7 @@ import requests
 import urllib.parse
 from dotenv import load_dotenv
 from colorama import init, Fore, Style
+from windows_toasts import Toast, WindowsToaster
 
 # Load environment variables from .env file
 load_dotenv()
@@ -116,9 +117,9 @@ def release_all_keys(hwnd):
 def print_banner():
     """Clears the console and prints a stylized banner."""
     os.system('cls' if os.name == 'nt' else 'clear')
-    os.system('title Hypixel Background Macro')
+    os.system('title Skyblock Background Macro')
     print(Fore.CYAN + Style.BRIGHT + "=========================================")
-    print(Fore.MAGENTA + Style.BRIGHT + "  HYPIXEL MACRO v11.0 (WhatsApp Edition)")
+    print(Fore.MAGENTA + Style.BRIGHT + "          SKYBLOCK MACRO v12.0")
     print(Fore.CYAN + Style.BRIGHT + "=========================================")
     print(Fore.YELLOW + Style.BRIGHT + " Commands:")
     print(Fore.GREEN + "   play  " + Fore.WHITE + "-> Starts the macro")
@@ -183,6 +184,18 @@ def macro_loop():
     else:
         print(Fore.GREEN + Style.BRIGHT + "\n[INFO] Macro successfully completed its task. The whole farm is done!")
         send_whatsapp_notification("✅ Task Completed!\nFinished the whole farm, awaiting your next order, boss.")
+        try:
+            # Toaster'ı başlat (Uygulama adı burada görünür)
+            toaster = WindowsToaster('Skyblock Macro')
+            
+            # Yeni bir toast bildirimi oluştur
+            newToast = Toast()
+            newToast.text_fields = ['Macro Completed!', 'All loops completed, entire farm processed.']
+            
+            # Bildirimi ateşle
+            toaster.show_toast(newToast)
+        except Exception as e:
+            print(Fore.RED + f"\n[ERROR] Windows notification could not be sent: {e}")
 
 def main():
     global is_running, stop_requested, macro_thread

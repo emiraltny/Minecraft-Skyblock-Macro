@@ -17,7 +17,7 @@
 Make sure you have Python 3 installed. You will also need the following Python libraries:
 
 ```bash
-pip install pywin32 requests python-dotenv colorama
+pip install pywin32 requests python-dotenv colorama windows-toasts
 ```
 
 ## 🚀 Setup & Installation

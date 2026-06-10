@@ -6,6 +6,7 @@ import threading
 import os
 import requests
 import urllib.parse
+import json
 from dotenv import load_dotenv
 from colorama import init, Fore, Style
 from windows_toasts import Toast, WindowsToaster
@@ -16,16 +17,40 @@ load_dotenv()
 # Activate color system for Windows
 init(autoreset=True)
 
-# --- WHATSAPP SETTINGS (Fetched from .env) ---
+# --- WHATSAPP SETTINGS (Fetched from .env file) ---
 YOUR_PHONE_NUMBER = os.getenv("PHONE_NUMBER") 
 API_KEY = os.getenv("CALLMEBOT_API_KEY")
 
 # --- MACRO SETTINGS ---
-IN_LINE_VALUE = 22.5       
-WALKING_VALUE = 1.8        
-WALKING_BACK_VALUE = 19.5  
-LOOP_VALUE = 9             
-LINE_VALUE = 8             
+CONFIG_FILE = "config.json"
+DEFAULT_CONFIG = {
+    "IN_LINE_VALUE": 22.5,
+    "WALKING_VALUE": 1.8,
+    "WALKING_BACK_VALUE": 19.5,
+    "LOOP_VALUE": 9,
+    "LINE_VALUE": 8
+}
+
+def load_config():
+    if not os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
+            json.dump(DEFAULT_CONFIG, f, indent=4)
+        return DEFAULT_CONFIG
+    
+    try:
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        print(Fore.RED + "[WARNING] config.json couldn't be loaded! Using default settings.")
+        return DEFAULT_CONFIG
+
+config = load_config()
+
+IN_LINE_VALUE = config.get("IN_LINE_VALUE", 22.5)
+WALKING_VALUE = config.get("WALKING_VALUE", 1.8)
+WALKING_BACK_VALUE = config.get("WALKING_BACK_VALUE", 19.5)
+LOOP_VALUE = config.get("LOOP_VALUE", 9)
+LINE_VALUE = config.get("LINE_VALUE", 8)
 
 # Key Codes (Virtual Key Codes)
 VK_W = 0x57
@@ -119,7 +144,7 @@ def print_banner():
     os.system('cls' if os.name == 'nt' else 'clear')
     os.system('title Skyblock Background Macro')
     print(Fore.CYAN + Style.BRIGHT + "=========================================")
-    print(Fore.MAGENTA + Style.BRIGHT + "          SKYBLOCK MACRO v12.0")
+    print(Fore.MAGENTA + Style.BRIGHT + "          SKYBLOCK MACRO v13.0")
     print(Fore.CYAN + Style.BRIGHT + "=========================================")
     print(Fore.YELLOW + Style.BRIGHT + " Commands:")
     print(Fore.GREEN + "   play  " + Fore.WHITE + "-> Starts the macro")
